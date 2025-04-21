@@ -52,10 +52,10 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Load datasets
-census_df = pd.read_csv("/Users/kita/Documents/Placewell AISG/data sets/mock_census_tracts_sanjose.csv")
-shelters_df = pd.read_csv("/Users/kita/Documents/Placewell AISG/data sets/mock_shelters_sanjose.csv")
-pit_df = pd.read_csv("/Users/kita/Documents/Placewell AISG/data sets/mock_pit_summary_sanjose.csv")
+# Load data
+census_df = pd.read_csv("../data_sets/mock_census_tracts_sanjose.csv")
+shelters_df = pd.read_csv("../data_sets/mock_shelters_sanjose.csv")
+pit_df = pd.read_csv("../data_sets/mock_pit_summary_sanjose.csv")
 
 # ------------------------
 # Utility & Scoring Class
