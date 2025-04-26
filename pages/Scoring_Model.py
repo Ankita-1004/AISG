@@ -7,7 +7,14 @@ from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 import time
 import os
-from openai import OpenAI
+
+# Try to import OpenAI, but make it optional
+try:
+    from openai import OpenAI
+    OPENAI_AVAILABLE = True
+except ImportError:
+    OPENAI_AVAILABLE = False
+    st.warning("OpenAI package not available. AI chatbox will be disabled.")
 
 # Set page config
 st.set_page_config(
@@ -63,13 +70,17 @@ except FileNotFoundError:
     st.error("Data files not found. Please make sure the data files are in the correct location.")
     st.stop()
 
-# Initialize OpenAI client
-api_key = st.secrets["openai"]["api_key"] if "openai" in st.secrets else os.getenv("OPENAI_API_KEY")
-if api_key:
-    client = OpenAI(api_key=api_key)
-else:
-    client = None
-    st.warning("OpenAI API key not found. AI chatbox will be disabled.")
+# Initialize OpenAI client only if available
+client = None
+if OPENAI_AVAILABLE:
+    try:
+        api_key = st.secrets["openai"]["api_key"] if "openai" in st.secrets else os.getenv("OPENAI_API_KEY")
+        if api_key:
+            client = OpenAI(api_key=api_key)
+        else:
+            st.warning("OpenAI API key not found. AI chatbox will be disabled.")
+    except Exception as e:
+        st.warning(f"Error initializing OpenAI client: {str(e)}. AI chatbox will be disabled.")
 
 # ------------------------
 # Utility & Scoring Class
@@ -255,7 +266,7 @@ if st.sidebar.button("Score Location", type="primary"):
 else:
     st.info("Please enter a site address in the sidebar to begin analysis.")
 
-# AI Chatbox
+# AI Chatbox - Only show if OpenAI is available and client is initialized
 if client:
     st.sidebar.markdown("---")
     st.sidebar.markdown('<div class="metric-title">💬 AI Chatbox: Ask About the Scoring Model</div>', unsafe_allow_html=True)
