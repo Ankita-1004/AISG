@@ -4,10 +4,47 @@ import numpy as np
 import plotly.express as px
 import folium
 from streamlit_folium import folium_static
-from Service_Area import calculate_coverage, plot_coverage_map
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 import time
+import math
+
+# Utility functions
+def calculate_coverage(lat, lon, radius_km, facility_type):
+    # Mock data for demonstration
+    population_covered = int(radius_km * 1000)  # Example calculation
+    area_covered = math.pi * (radius_km ** 2)
+    coverage_efficiency = min(100, (population_covered / 10000) * 100)
+    
+    analysis_report = f"""
+    <p><strong>Coverage Analysis for {facility_type}</strong></p>
+    <p>• Service radius: {radius_km} km</p>
+    <p>• Population within radius: {population_covered:,}</p>
+    <p>• Area covered: {area_covered:.2f} km²</p>
+    <p>• Coverage efficiency: {coverage_efficiency:.1f}%</p>
+    """
+    
+    return {
+        'population_covered': population_covered,
+        'area_covered': area_covered,
+        'coverage_efficiency': coverage_efficiency,
+        'analysis_report': analysis_report
+    }
+
+def plot_coverage_map(coverage_data):
+    # Create a map centered on San Jose
+    m = folium.Map(location=[37.3382, -121.8863], zoom_start=11)
+    
+    # Add a circle to represent the coverage area
+    folium.Circle(
+        location=[37.3382, -121.8863],
+        radius=coverage_data['area_covered'] * 1000,  # Convert km to meters
+        color='blue',
+        fill=True,
+        fill_opacity=0.2
+    ).add_to(m)
+    
+    return m
 
 # Set page config
 st.set_page_config(
@@ -170,4 +207,4 @@ if st.sidebar.button("Analyze Coverage", type="primary"):
     except Exception as e:
         st.error(f"Error during analysis: {str(e)}")
 else:
-    st.info("Please enter the site address and coverage parameters in the sidebar to begin analysis.") 
+    st.info("Please enter the site address and coverage parameters in the sidebar to begin analysis.")
