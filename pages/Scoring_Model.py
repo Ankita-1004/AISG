@@ -6,6 +6,8 @@ import math
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 import time
+import os
+from openai import OpenAI
 
 # Set page config
 st.set_page_config(
@@ -57,6 +59,9 @@ census_df = pd.read_csv("../data_sets/mock_census_tracts_sanjose.csv")
 shelters_df = pd.read_csv("../data_sets/mock_shelters_sanjose.csv")
 pit_df = pd.read_csv("../data_sets/mock_pit_summary_sanjose.csv")
 
+
+#API
+client = OpenAI(api_key="API key")
 # ------------------------
 # Utility & Scoring Class
 # ------------------------
@@ -240,3 +245,35 @@ if st.sidebar.button("Score Location", type="primary"):
         st.error(f"Error during analysis: {str(e)}")
 else:
     st.info("Please enter a site address in the sidebar to begin analysis.") 
+
+# chatbox 
+# Location input
+address = st.sidebar.text_input("Site Address", "200 E Santa Clara St, San Jose, CA 95113")
+
+# AI Chatbox
+st.sidebar.markdown("---")
+st.sidebar.markdown('<div class="metric-title">💬 AI Chatbox: Ask About the Scoring Model</div>', unsafe_allow_html=True)
+user_question = st.sidebar.text_input("Type your question about the EIH scoring model or a score:")
+
+if st.sidebar.button("Ask AI"):
+    if user_question.strip():
+        with st.spinner("AI is generating an explanation..."):
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": (
+                            "You are an expert in Emergency Interim Housing (EIH) site selection and scoring models. "
+                            "Always provide clear, concise explanations of how the site scoring system works, "
+                            "what each score means, and why these factors matter for city planning. "
+                            "If asked about a specific number, explain what it measures."
+                        )
+                    },
+                    {"role": "user", "content": user_question}
+                ]
+            )
+            st.sidebar.success("AI Answer:")
+            st.sidebar.write(response.choices[0].message.content)
+    else:
+        st.sidebar.warning("Please enter a question for the AI.")
