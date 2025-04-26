@@ -37,29 +37,76 @@ def generate_report(results):
     """
 
 def generate_risk_assessment(lat, lon, facility_type, size_sqm, results):
-    # Mock risk assessment data
+    # Generate dynamic risks based on actual scores and location
     risks = {
-        'zoning_challenges': [
-            "Current zoning may require a conditional use permit",
-            "Height restrictions may limit building capacity",
-            "Parking requirements may need variance"
-        ],
-        'construction_risks': [
-            "Moderate slope in northern section of site",
-            "Seasonal flooding risk in southwest corner",
-            "Soil stability concerns in eastern portion"
-        ],
-        'political_sensitivities': [
-            "Elementary school within 500m",
-            "Active neighborhood association in area",
-            "Historic district considerations"
-        ],
-        'environmental_flags': [
-            "Protected tree species on site",
-            "Potential archaeological significance",
-            "Stormwater management requirements"
-        ]
+        'zoning_challenges': [],
+        'construction_risks': [],
+        'political_sensitivities': [],
+        'environmental_flags': []
     }
+    
+    # Zoning Challenges based on zoning score
+    if results['zoning_score'] < 70:
+        risks['zoning_challenges'].append("High risk of zoning conflicts - may require extensive variance process")
+    elif results['zoning_score'] < 85:
+        risks['zoning_challenges'].append("Moderate zoning challenges - conditional use permit likely required")
+    else:
+        risks['zoning_challenges'].append("Zoning appears favorable, but standard permits still required")
+    
+    # Construction Risks based on infrastructure score
+    if results['infrastructure_score'] < 60:
+        risks['construction_risks'].extend([
+            "Significant infrastructure upgrades needed",
+            "Potential soil stability issues",
+            "Drainage system may require major modifications"
+        ])
+    elif results['infrastructure_score'] < 80:
+        risks['construction_risks'].extend([
+            "Moderate infrastructure improvements needed",
+            "Some site grading may be required",
+            "Utility connections may need upgrades"
+        ])
+    else:
+        risks['construction_risks'].append("Infrastructure appears adequate for development")
+    
+    # Political Sensitivities based on location
+    # Using latitude/longitude to determine if near sensitive areas
+    if 37.33 <= lat <= 37.34 and -121.89 <= lon <= -121.88:  # Downtown area
+        risks['political_sensitivities'].extend([
+            "High visibility location - increased community engagement needed",
+            "Multiple stakeholders in the area",
+            "Historic district considerations"
+        ])
+    elif 37.31 <= lat <= 37.32 and -121.85 <= lon <= -121.84:  # Residential area
+        risks['political_sensitivities'].extend([
+            "Active neighborhood association in area",
+            "School proximity considerations",
+            "Residential density concerns"
+        ])
+    else:
+        risks['political_sensitivities'].append("Standard community engagement process required")
+    
+    # Environmental Flags based on size and type
+    if size_sqm > 2000:
+        risks['environmental_flags'].extend([
+            "Large site - comprehensive environmental review required",
+            "Stormwater management plan needed",
+            "Potential habitat impact assessment required"
+        ])
+    elif size_sqm > 1000:
+        risks['environmental_flags'].extend([
+            "Moderate environmental review required",
+            "Basic stormwater management needed",
+            "Site-specific environmental considerations"
+        ])
+    else:
+        risks['environmental_flags'].append("Standard environmental review process")
+    
+    # Add facility type specific risks
+    if facility_type == "Temporary Shelter":
+        risks['zoning_challenges'].append("Temporary use permits may be required")
+    elif facility_type == "Supportive Housing":
+        risks['zoning_challenges'].append("Permanent housing zoning requirements apply")
     
     return risks
 
@@ -119,6 +166,26 @@ st.markdown("""
         color: #ff6b6b;
         font-size: 1.2rem;
         margin-bottom: 0.5rem;
+    }
+    .risk-level {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        margin-left: 0.5rem;
+    }
+    .risk-high {
+        background-color: #ff6b6b;
+        color: white;
+    }
+    .risk-medium {
+        background-color: #ffd93d;
+        color: black;
+    }
+    .risk-low {
+        background-color: #6bff6b;
+        color: black;
     }
     </style>
 """, unsafe_allow_html=True)
