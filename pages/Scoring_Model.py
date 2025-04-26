@@ -55,9 +55,13 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Load data
-census_df = pd.read_csv("../data_sets/mock_census_tracts_sanjose.csv")
-shelters_df = pd.read_csv("../data_sets/mock_shelters_sanjose.csv")
-pit_df = pd.read_csv("../data_sets/mock_pit_summary_sanjose.csv")
+try:
+    census_df = pd.read_csv("data sets/mock_census_tracts_sanjose.csv")
+    shelters_df = pd.read_csv("data sets/mock_shelters_sanjose.csv")
+    pit_df = pd.read_csv("data sets/mock_pit_summary_sanjose.csv")
+except FileNotFoundError:
+    st.error("Data files not found. Please make sure the data files are in the correct location.")
+    st.stop()
 
 # Initialize OpenAI client
 api_key = st.secrets["openai"]["api_key"] if "openai" in st.secrets else os.getenv("OPENAI_API_KEY")
@@ -281,4 +285,4 @@ if client:
                 except Exception as e:
                     st.sidebar.error(f"Error communicating with AI: {str(e)}")
         else:
-            st.sidebar.warning("Please enter a question for the AI.") 
+            st.sidebar.warning("Please enter a question for the AI.")
