@@ -17,16 +17,77 @@ except ImportError:
 
 # Utility functions
 def analyze_feasibility(lat, lon, facility_type, size_sqm):
-    # Mock data for demonstration
-    zoning_score = 85
-    infrastructure_score = 75
-    overall_score = (zoning_score + infrastructure_score) / 2
+    # Generate dynamic scores based on location and parameters
+    # Zoning score based on location and facility type
+    if 37.33 <= lat <= 37.34 and -121.89 <= lon <= -121.88:  # Downtown area
+        zoning_score = 90 if facility_type in ["Temporary Shelter", "Emergency Shelter"] else 75
+    elif 37.31 <= lat <= 37.32 and -121.85 <= lon <= -121.84:  # Residential area
+        zoning_score = 65 if facility_type in ["Supportive Housing", "Transitional Housing"] else 45
+    else:
+        zoning_score = 80
+
+    # Infrastructure score based on size and location
+    if size_sqm > 2000:
+        infrastructure_score = 60  # Larger sites need more infrastructure
+    elif size_sqm > 1000:
+        infrastructure_score = 75
+    else:
+        infrastructure_score = 85
+
+    # Adjust scores based on facility type
+    if facility_type == "Temporary Shelter":
+        zoning_score *= 1.1  # Temporary shelters often have more flexible zoning
+    elif facility_type == "Supportive Housing":
+        infrastructure_score *= 0.9  # Supportive housing needs more infrastructure
+
+    # Ensure scores are within 0-100 range
+    zoning_score = min(100, max(0, round(zoning_score)))
+    infrastructure_score = min(100, max(0, round(infrastructure_score)))
     
+    # Calculate overall score with weights
+    overall_score = round(0.6 * zoning_score + 0.4 * infrastructure_score, 1)
+
     return {
         'zoning_score': zoning_score,
         'infrastructure_score': infrastructure_score,
         'overall_score': overall_score
     }
+
+def get_zoning_interpretation(score):
+    if score >= 90:
+        return "Excellent zoning compatibility"
+    elif score >= 80:
+        return "Good zoning compatibility with minor considerations"
+    elif score >= 70:
+        return "Moderate zoning challenges"
+    elif score >= 60:
+        return "Significant zoning challenges"
+    else:
+        return "Major zoning obstacles"
+
+def get_infrastructure_interpretation(score):
+    if score >= 90:
+        return "Excellent infrastructure conditions"
+    elif score >= 80:
+        return "Good infrastructure with minor upgrades needed"
+    elif score >= 70:
+        return "Moderate infrastructure improvements required"
+    elif score >= 60:
+        return "Significant infrastructure upgrades needed"
+    else:
+        return "Major infrastructure challenges"
+
+def get_overall_interpretation(score):
+    if score >= 90:
+        return "Highly feasible site"
+    elif score >= 80:
+        return "Good feasibility with manageable challenges"
+    elif score >= 70:
+        return "Moderate feasibility with significant considerations"
+    elif score >= 60:
+        return "Challenging but potentially feasible"
+    else:
+        return "Major feasibility concerns"
 
 def generate_report(results):
     return f"""
@@ -34,6 +95,12 @@ def generate_report(results):
     <p>• Zoning Score: {results['zoning_score']}/100</p>
     <p>• Infrastructure Score: {results['infrastructure_score']}/100</p>
     <p>• Overall Feasibility: {results['overall_score']}/100</p>
+    <p><strong>Score Interpretation:</strong></p>
+    <ul>
+        <li>Zoning Score: {get_zoning_interpretation(results['zoning_score'])}</li>
+        <li>Infrastructure Score: {get_infrastructure_interpretation(results['infrastructure_score'])}</li>
+        <li>Overall Feasibility: {get_overall_interpretation(results['overall_score'])}</li>
+    </ul>
     """
 
 def generate_risk_assessment(lat, lon, facility_type, size_sqm, results):
@@ -70,7 +137,6 @@ def generate_risk_assessment(lat, lon, facility_type, size_sqm, results):
         risks['construction_risks'].append("Infrastructure appears adequate for development")
     
     # Political Sensitivities based on location
-    # Using latitude/longitude to determine if near sensitive areas
     if 37.33 <= lat <= 37.34 and -121.89 <= lon <= -121.88:  # Downtown area
         risks['political_sensitivities'].extend([
             "High visibility location - increased community engagement needed",
@@ -358,4 +424,4 @@ if st.sidebar.button("Analyze Feasibility", type="primary"):
     except Exception as e:
         st.error(f"Error during analysis: {str(e)}")
 else:
-    st.info("Please enter the site address and parameters in the sidebar to begin analysis.")
+    st.info("Please enter the site address and parameters in the sidebar to begin analysis.") 
