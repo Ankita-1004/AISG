@@ -59,9 +59,14 @@ census_df = pd.read_csv("../data_sets/mock_census_tracts_sanjose.csv")
 shelters_df = pd.read_csv("../data_sets/mock_shelters_sanjose.csv")
 pit_df = pd.read_csv("../data_sets/mock_pit_summary_sanjose.csv")
 
+# Initialize OpenAI client
+api_key = st.secrets["openai"]["api_key"] if "openai" in st.secrets else os.getenv("OPENAI_API_KEY")
+if api_key:
+    client = OpenAI(api_key=api_key)
+else:
+    client = None
+    st.warning("OpenAI API key not found. AI chatbox will be disabled.")
 
-#API
-client = OpenAI(api_key="API key")
 # ------------------------
 # Utility & Scoring Class
 # ------------------------
@@ -244,36 +249,36 @@ if st.sidebar.button("Score Location", type="primary"):
     except Exception as e:
         st.error(f"Error during analysis: {str(e)}")
 else:
-    st.info("Please enter a site address in the sidebar to begin analysis.") 
-
-# chatbox 
-# Location input
-address = st.sidebar.text_input("Site Address", "200 E Santa Clara St, San Jose, CA 95113")
+    st.info("Please enter a site address in the sidebar to begin analysis.")
 
 # AI Chatbox
-st.sidebar.markdown("---")
-st.sidebar.markdown('<div class="metric-title">💬 AI Chatbox: Ask About the Scoring Model</div>', unsafe_allow_html=True)
-user_question = st.sidebar.text_input("Type your question about the EIH scoring model or a score:")
+if client:
+    st.sidebar.markdown("---")
+    st.sidebar.markdown('<div class="metric-title">💬 AI Chatbox: Ask About the Scoring Model</div>', unsafe_allow_html=True)
+    user_question = st.sidebar.text_input("Type your question about the EIH scoring model or a score:")
 
-if st.sidebar.button("Ask AI"):
-    if user_question.strip():
-        with st.spinner("AI is generating an explanation..."):
-            response = client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[
-                    {
-                        "role": "system",
-                        "content": (
-                            "You are an expert in Emergency Interim Housing (EIH) site selection and scoring models. "
-                            "Always provide clear, concise explanations of how the site scoring system works, "
-                            "what each score means, and why these factors matter for city planning. "
-                            "If asked about a specific number, explain what it measures."
-                        )
-                    },
-                    {"role": "user", "content": user_question}
-                ]
-            )
-            st.sidebar.success("AI Answer:")
-            st.sidebar.write(response.choices[0].message.content)
-    else:
-        st.sidebar.warning("Please enter a question for the AI.")
+    if st.sidebar.button("Ask AI"):
+        if user_question.strip():
+            with st.spinner("AI is generating an explanation..."):
+                try:
+                    response = client.chat.completions.create(
+                        model="gpt-3.5-turbo",
+                        messages=[
+                            {
+                                "role": "system",
+                                "content": (
+                                    "You are an expert in Emergency Interim Housing (EIH) site selection and scoring models. "
+                                    "Always provide clear, concise explanations of how the site scoring system works, "
+                                    "what each score means, and why these factors matter for city planning. "
+                                    "If asked about a specific number, explain what it measures."
+                                )
+                            },
+                            {"role": "user", "content": user_question}
+                        ]
+                    )
+                    st.sidebar.success("AI Answer:")
+                    st.sidebar.write(response.choices[0].message.content)
+                except Exception as e:
+                    st.sidebar.error(f"Error communicating with AI: {str(e)}")
+        else:
+            st.sidebar.warning("Please enter a question for the AI.") 
