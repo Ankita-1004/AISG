@@ -58,6 +58,13 @@ st.markdown("""
         margin: 1rem 0;
         border-left: 4px solid #60a3d9;
     }
+    .chat-response {
+        background-color: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-top: 1rem;
+        border-left: 4px solid #60a3d9;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -272,13 +279,19 @@ else:
 
 # AI Chatbox - Only show if OpenAI is available and client is initialized
 if client:
-    st.sidebar.markdown("---")
-    st.sidebar.markdown('<div class="metric-title">💬 AI Chatbox: Ask About the Scoring Model</div>', unsafe_allow_html=True)
-    user_question = st.sidebar.text_input("Type your question about the EIH scoring model or a score:")
-
-    if st.sidebar.button("Ask AI"):
+    st.markdown("---")
+    st.markdown('<div class="header">💬 Chat with Pia: EIH Specialist</div>', unsafe_allow_html=True)
+    st.markdown("""
+        <div class="example-card">
+            <p>Pia is an experienced Emergency Interim Housing specialist who can help you understand the scoring model and provide insights about potential EIH sites.</p>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    user_question = st.text_input("Ask Pia about the EIH scoring model or a specific score:")
+    
+    if st.button("Ask Pia"):
         if user_question.strip():
-            with st.spinner("AI is generating an explanation..."):
+            with st.spinner("Pia is thinking..."):
                 try:
                     response = client.chat.completions.create(
                         model="gpt-3.5-turbo",
@@ -286,18 +299,29 @@ if client:
                             {
                                 "role": "system",
                                 "content": (
-                                    "You are an expert in Emergency Interim Housing (EIH) site selection and scoring models. "
-                                    "Always provide clear, concise explanations of how the site scoring system works, "
-                                    "what each score means, and why these factors matter for city planning. "
-                                    "If asked about a specific number, explain what it measures."
+                                    "You are Pia, an experienced Emergency Interim Housing (EIH) specialist with over 15 years of experience in housing policy and urban planning. "
+                                    "You have a deep understanding of the challenges faced by unhoused communities and the importance of thoughtful site selection. "
+                                    "Your responses should be:"
+                                    "\n• Professional yet approachable"
+                                    "\n• Focused on practical insights and real-world implications"
+                                    "\n• Informed by your experience working with unhoused communities"
+                                    "\n• Clear about how different factors affect site suitability"
+                                    "\n• Empathetic to the needs of both unhoused individuals and surrounding communities"
+                                    "\nWhen explaining scores or factors, relate them to real-world impacts and community needs."
                                 )
                             },
                             {"role": "user", "content": user_question}
                         ]
                     )
-                    st.sidebar.success("AI Answer:")
-                    st.sidebar.write(response.choices[0].message.content)
+                    st.markdown("""
+                        <div class="metric-card">
+                            <div class="metric-title">Pia's Response</div>
+                            <div style="padding: 1rem;">
+                                {}
+                            </div>
+                        </div>
+                    """.format(response.choices[0].message.content), unsafe_allow_html=True)
                 except Exception as e:
-                    st.sidebar.error(f"Error communicating with AI: {str(e)}")
+                    st.error(f"Error communicating with Pia: {str(e)}")
         else:
-            st.sidebar.warning("Please enter a question for the AI.")
+            st.warning("Please enter a question for Pia.")
