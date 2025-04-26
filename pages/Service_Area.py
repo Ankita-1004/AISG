@@ -4,7 +4,7 @@ import numpy as np
 import plotly.express as px
 import folium
 from streamlit_folium import folium_static
-from Feature_3_Service_Area_Coverage import calculate_coverage, plot_coverage_map
+from Service_Area import calculate_coverage, plot_coverage_map
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 import time
