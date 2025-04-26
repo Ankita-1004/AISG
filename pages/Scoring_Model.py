@@ -76,7 +76,11 @@ if OPENAI_AVAILABLE:
     try:
         api_key = st.secrets["openai"]["api_key"] if "openai" in st.secrets else os.getenv("OPENAI_API_KEY")
         if api_key:
-            client = OpenAI(api_key=api_key)
+            # Updated client initialization
+            client = OpenAI(
+                api_key=api_key,
+                base_url="https://api.openai.com/v1"  # Explicitly set the base URL
+            )
         else:
             st.warning("OpenAI API key not found. AI chatbox will be disabled.")
     except Exception as e:
