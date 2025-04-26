@@ -157,7 +157,7 @@ st.markdown("""
 # Footer
 st.markdown("""
     <div class="footer">
-        Created by Team Violet | 
+        Created by Ankita, Anam, Linh, Ashna, Chaittanya | 
         <a href="https://github.com/Ankita-1004/AISG/tree/1c3f7c6981e4df48967d8d63cce44b2bfa406da8" style="color: #0074b7; text-decoration: none;">GitHub</a>
     </div>
 """, unsafe_allow_html=True) 
