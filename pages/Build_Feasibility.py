@@ -5,6 +5,15 @@ import plotly.express as px
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 import time
+import os
+
+# Try to import OpenAI, but make it optional
+try:
+    from openai import OpenAI
+    OPENAI_AVAILABLE = True
+except ImportError:
+    OPENAI_AVAILABLE = False
+    st.warning("OpenAI package not available. AI risk assessment will be disabled.")
 
 # Utility functions
 def analyze_feasibility(lat, lon, facility_type, size_sqm):
@@ -26,6 +35,33 @@ def generate_report(results):
     <p>• Infrastructure Score: {results['infrastructure_score']}/100</p>
     <p>• Overall Feasibility: {results['overall_score']}/100</p>
     """
+
+def generate_risk_assessment(lat, lon, facility_type, size_sqm, results):
+    # Mock risk assessment data
+    risks = {
+        'zoning_challenges': [
+            "Current zoning may require a conditional use permit",
+            "Height restrictions may limit building capacity",
+            "Parking requirements may need variance"
+        ],
+        'construction_risks': [
+            "Moderate slope in northern section of site",
+            "Seasonal flooding risk in southwest corner",
+            "Soil stability concerns in eastern portion"
+        ],
+        'political_sensitivities': [
+            "Elementary school within 500m",
+            "Active neighborhood association in area",
+            "Historic district considerations"
+        ],
+        'environmental_flags': [
+            "Protected tree species on site",
+            "Potential archaeological significance",
+            "Stormwater management requirements"
+        ]
+    }
+    
+    return risks
 
 # Set page config
 st.set_page_config(
@@ -71,6 +107,18 @@ st.markdown("""
         border-radius: 5px;
         margin: 1rem 0;
         border-left: 4px solid #60a3d9;
+    }
+    .risk-card {
+        background-color: #fff;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        border-left: 4px solid #ff6b6b;
+    }
+    .risk-title {
+        color: #ff6b6b;
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -173,6 +221,70 @@ if st.sidebar.button("Analyze Feasibility", type="primary"):
                     {report}
                 </div>
             """, unsafe_allow_html=True)
+
+            # Generate and display risk assessment
+            st.markdown('<div class="metric-title">Site Risk Assessment</div>', unsafe_allow_html=True)
+            risks = generate_risk_assessment(latitude, longitude, facility_type, size_sqm, results)
+            
+            # Display each risk category
+            for category, risk_list in risks.items():
+                category_title = category.replace('_', ' ').title()
+                st.markdown(f"""
+                    <div class="risk-card">
+                        <div class="risk-title">{category_title}</div>
+                        <ul>
+                            {''.join(f'<li>{risk}</li>' for risk in risk_list)}
+                        </ul>
+                    </div>
+                """, unsafe_allow_html=True)
+
+            # AI Risk Analysis
+            if OPENAI_AVAILABLE and 'client' in locals():
+                st.markdown('<div class="metric-title">AI Risk Analysis</div>', unsafe_allow_html=True)
+                with st.spinner("Analyzing potential risks..."):
+                    try:
+                        response = client.chat.completions.create(
+                            model="gpt-3.5-turbo",
+                            messages=[
+                                {
+                                    "role": "system",
+                                    "content": (
+                                        "You are an expert in Emergency Interim Housing (EIH) site assessment and risk analysis. "
+                                        "Analyze the following site data and provide a comprehensive risk assessment focusing on:"
+                                        "\n• Zoning and regulatory challenges"
+                                        "\n• Construction and environmental risks"
+                                        "\n• Community and political considerations"
+                                        "\n• Mitigation strategies"
+                                        "\nBe specific and practical in your recommendations."
+                                    )
+                                },
+                                {
+                                    "role": "user",
+                                    "content": f"""
+                                    Site Details:
+                                    - Type: {facility_type}
+                                    - Size: {size_sqm} sqm
+                                    - Location: {address}
+                                    - Zoning Score: {results['zoning_score']}
+                                    - Infrastructure Score: {results['infrastructure_score']}
+                                    - Overall Feasibility: {results['overall_score']}
+                                    
+                                    Please provide a detailed risk assessment and recommendations.
+                                    """
+                                }
+                            ]
+                        )
+                        st.markdown("""
+                            <div class="metric-card">
+                                <div class="metric-title">AI Risk Analysis</div>
+                                <div style="padding: 1rem;">
+                                    {}
+                                </div>
+                            </div>
+                        """.format(response.choices[0].message.content), unsafe_allow_html=True)
+                    except Exception as e:
+                        st.error(f"Error generating AI risk analysis: {str(e)}")
+            
         else:
             st.error("Could not find the specified address. Please check the address and try again.")
         
