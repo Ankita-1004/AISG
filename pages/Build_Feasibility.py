@@ -2,10 +2,30 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
-from Feature_2_Build_Feasibility_Analyzer import analyze_feasibility, generate_report
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
 import time
+
+# Utility functions
+def analyze_feasibility(lat, lon, facility_type, size_sqm):
+    # Mock data for demonstration
+    zoning_score = 85
+    infrastructure_score = 75
+    overall_score = (zoning_score + infrastructure_score) / 2
+    
+    return {
+        'zoning_score': zoning_score,
+        'infrastructure_score': infrastructure_score,
+        'overall_score': overall_score
+    }
+
+def generate_report(results):
+    return f"""
+    <p><strong>Feasibility Analysis Report</strong></p>
+    <p>• Zoning Score: {results['zoning_score']}/100</p>
+    <p>• Infrastructure Score: {results['infrastructure_score']}/100</p>
+    <p>• Overall Feasibility: {results['overall_score']}/100</p>
+    """
 
 # Set page config
 st.set_page_config(
@@ -159,4 +179,4 @@ if st.sidebar.button("Analyze Feasibility", type="primary"):
     except Exception as e:
         st.error(f"Error during analysis: {str(e)}")
 else:
-    st.info("Please enter the site address and parameters in the sidebar to begin analysis.") 
+    st.info("Please enter the site address and parameters in the sidebar to begin analysis.")
