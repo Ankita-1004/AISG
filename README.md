@@ -138,4 +138,5 @@ Watch our walkthrough of PlaceWell in action to see how city planners can:
 - Visualize shelter coverage and identify service gaps across San Jose
 - Use the built-in AI chatbot to interpret results and support decision-making
 
-![PlaceWell Demo](./PlaceWell%20Demo.gif)
+![PlaceWell Demo](./PlaceWellDemo.gif)
+
