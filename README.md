@@ -145,7 +145,7 @@ Watch our walkthrough of PlaceWell in action to see how city planners can:
 
 Click below to watch the PlaceWell demo and see how planners evaluate and compare potential EIH sites:
 
-[▶️ Watch the PlaceWell Demo](https://drive.google.com/drive/u/0/folders/1Z1KMMDPvJXhhaoe_UzYwwGBcz9DEgy0p)
+[▶️ Watch the PlaceWell Demo]([https://drive.google.com/file/d/1HpBfD5_t2tNazbX1W8__qIVFiyc9kmL1/view?usp=drive_link]
 
 
 
