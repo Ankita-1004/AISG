@@ -129,3 +129,12 @@ plotly>=5.18.0
 numpy>=1.24.0
 ```
 ---
+## See Our Demo Video
+
+Watch our walkthrough of PlaceWell in action to see how city planners can:
+
+- Score potential EIH sites using AI-generated metrics
+- Evaluate build feasibility instantly with environmental risk detection
+- Visualize shelter coverage and identify service gaps across San Jose
+- Use the built-in AI chatbot to interpret results and support decision-making
+
