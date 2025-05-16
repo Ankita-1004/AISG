@@ -1,4 +1,6 @@
-## PlaceWell: What is it?
+## PlaceWell
+![AISG Logo](https://github.com/user-attachments/assets/2aa4f56a-ec81-46a7-80e9-c971b902a44c)
+What is it?
 
 PlaceWell is a web-based application that integrates spatial analysis, AI-powered scoring, and infrastructure readiness into one cohesive platform for urban planners. It features three core modules:
 
@@ -129,7 +131,7 @@ plotly>=5.18.0
 numpy>=1.24.0
 ```
 ---
-## See Our Demo Video
+## Demo Preview
 
 Watch our walkthrough of PlaceWell in action to see how city planners can:
 
@@ -138,6 +140,9 @@ Watch our walkthrough of PlaceWell in action to see how city planners can:
 - Visualize shelter coverage and identify service gaps across San Jose
 - Use the built-in AI chatbot to interpret results and support decision-making
 
-![PlaceWell Demo](PlaceWell_Demo.gif)
+Click below to watch the PlaceWell demo and see how planners evaluate and compare potential EIH sites:
+
+[▶️ Watch the PlaceWell Demo](https://drive.google.com/drive/u/0/folders/1Z1KMMDPvJXhhaoe_UzYwwGBcz9DEgy0p)
+
 
 
