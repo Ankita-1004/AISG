@@ -1,10 +1,39 @@
+## PlaceWell: What is it?
 
-# PlaceWell – EIH Decision Support Features
+PlaceWell is a web-based application that integrates spatial analysis, AI-powered scoring, and infrastructure readiness into one cohesive platform for urban planners. It features three core modules:
 
-PlaceWell is a multi-feature web application built with Streamlit that empowers city planners to make informed decisions about placing 90-day Emergency Interim Housing (EIH) sites in San Jose. Below is an overview of its three key modules:
+- **Scoring Model**: Ranks parcels based on proximity to key services like transit, healthcare, and existing shelters.
+- **Build Feasibility Analyzer**: Assesses each site's build-readiness by analyzing slope, accessibility, flood risk, and soil stability.
+- **Service Area Coverage Simulator**: Visualizes service gaps and overlap when a new site is proposed, helping cities avoid redundancy and expand reach.
 
+**AI capabilities also include:**
+- An AI-generated **Site Risk Assessment Report** that flags zoning, environmental, and construction challenges.
+- A **Scoring Assistant Chatbot** that helps planners interpret scores and explore alternatives.
 ---
+## Why PlaceWell?
 
+The City of San Jose faces major challenges in placing EIH sites due to:
+
+- Limited insight into physical infrastructure and zoning constraints
+- Inconsistent evaluation of construction feasibility
+- High demand for shelter solutions and limited resources
+- Scattered data sources and lack of integration tools
+
+**PlaceWell directly addresses these issues by:**
+- Automating parcel scoring based on key planning metrics
+- Flagging risk early to avoid delays or missteps
+- Empowering planners with a simplified, all-in-one decision support dashboard
+- Promoting equity in shelter access by highlighting underserved zones
+---
+## Our Solution
+
+We developed PlaceWell as a prototype using Streamlit and generative AI tools to support real-world urban planning. The project is informed by consultation with public sector housing teams and focused on building a system that reflects actual civic workflows. The tool’s three features allow users to:
+
+- Input a site address and receive a breakdown of zoning, infrastructure, and readiness scores
+- Visualize how a proposed site would affect coverage across the city
+- Generate reports and AI summaries for presentations or council meetings
+- Navigate siting decisions with the help of an AI chatbot for quick data interpretation
+"""
 ## Feature 1: Scoring Model
 
 **Purpose:**  
@@ -99,3 +128,4 @@ shapely>=2.0.0
 plotly>=5.18.0
 numpy>=1.24.0
 ```
+---
